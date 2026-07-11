@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-body">
+
+<nav class="navbar">
+    <div class="nav-left">
+        <div class="logo-badge">👑</div>
+        <div>
+            <h2 class="brand-title">Admin Panel</h2>
+            <p class="brand-subtitle">CropPriceAI Management</p>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin" class="active-link">Admin</a>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-tag">Admin Control Center</span>
+            <h1>Manage Users and Monitor Predictions</h1>
+            <p>View users, crop records, total predictions, and recent prediction activity.</p>
+        </div>
+    </div>
+</section>
+
+<section class="crop-showcase">
+    <div class="section-title-wrap">
+        <h2>Admin Overview</h2>
+        <p>Quick system summary</p>
+    </div>
+
+    <div class="result-grid">
+        <div class="result-stat">
+            <span>Total Users</span>
+            <h3>{{ users|length }}</h3>
+        </div>
+
+        <div class="result-stat">
+            <span>Total Crops</span>
+            <h3>{{ crop_count }}</h3>
+        </div>
+
+        <div class="result-stat">
+            <span>Crop Records</span>
+            <h3>{{ record_count }}</h3>
+        </div>
+
+        <div class="result-stat highlight-stat">
+            <span>Total Predictions</span>
+            <h3>{{ total_predictions }}</h3>
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-layout">
+
+    <div class="glass-card result-card-box">
+        <div class="card-head">
+            <h2>👥 Registered Users</h2>
+            <p>Admin can view and delete normal users.</p>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                    {% if user.username != "admin" %}
+                    <a href="/delete-user/{{ user.id }}" class="action-link-btn green-btn">Delete</a>
+                    {% else %}
+                    Admin
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="glass-card result-card-box">
+        <div class="card-head">
+            <h2>📊 Recent Predictions</h2>
+            <p>Latest user prediction activity.</p>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>User</th>
+                <th>Crop</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Predicted Price</th>
+                <th>Date</th>
+            </tr>
+
+            {% for row in recent_predictions %}
+            <tr>
+                <td>{{ row.username }}</td>
+                <td>{{ row.crop }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.month }}</td>
+                <td>₹ {{ row.predicted_price }}</td>
+                <td>{{ row.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</section>
+
+</body>
+</html>

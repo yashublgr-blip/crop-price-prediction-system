@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-body">
+
+<nav class="navbar">
+    <div class="nav-left">
+        <div class="logo-badge">🌾</div>
+        <div>
+            <h2 class="brand-title">CropPriceAI</h2>
+            <p class="brand-subtitle">Prediction History</p>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/quality">Quality Check</a>
+        <a href="/history" class="active-link">My Predictions</a>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-tag">Your Previous Records</span>
+            <h1>Prediction History</h1>
+            <p>View your previously generated crop price predictions.</p>
+        </div>
+    </div>
+</section>
+
+<section class="crop-showcase">
+    <div class="glass-card result-card-box">
+        <div class="card-head">
+            <h2>📊 My Predictions</h2>
+            <p>All saved prediction records.</p>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>Crop</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Past</th>
+                <th>Present</th>
+                <th>Future</th>
+                <th>Average</th>
+                <th>Date</th>
+            </tr>
+
+            {% for row in history_rows %}
+            <tr>
+                <td>{{ row.crop }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.month }}</td>
+                <td>₹ {{ row.past_price }}</td>
+                <td>₹ {{ row.present_price }}</td>
+                <td>₹ {{ row.predicted_price }}</td>
+                <td>₹ {{ row.average_price }}</td>
+                <td>{{ row.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+</body>
+</html>

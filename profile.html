@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo-badge">🌾</div>
+            <div>
+                <h2 class="brand-title">CropPriceAI</h2>
+                <p class="brand-subtitle">User Profile</p>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/quality">Quality Check</a>
+            <a href="/history">My Predictions</a>
+            <a href="/profile" class="active-link">Profile</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="/admin">Admin</a>
+            {% endif %}
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-tag">Account Overview</span>
+                <h1>{{ username }}'s Profile</h1>
+                <p>Track your platform activity, predictions, and crop quality checks.</p>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat-card"><h3>{{ total_predictions }}</h3><p>Total Predictions</p></div>
+                <div class="hero-stat-card"><h3>{{ total_quality_checks }}</h3><p>Quality Checks</p></div>
+                <div class="hero-stat-card"><h3>Active</h3><p>User Status</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-layout">
+        <div class="glass-card">
+            <div class="card-head">
+                <h2>📈 Recent Predictions</h2>
+            </div>
+            {% if recent_predictions %}
+                {% for row in recent_predictions %}
+                <div class="profile-list-card">
+                    <h4>{{ row['crop'] }}</h4>
+                    <p>Predicted Price: ₹ {{ row['predicted_price'] }}</p>
+                    <small>{{ row['created_at'] }}</small>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-result-box"><p>No predictions yet.</p></div>
+            {% endif %}
+        </div>
+
+        <div class="glass-card">
+            <div class="card-head">
+                <h2>🧪 Recent Quality Checks</h2>
+            </div>
+            {% if recent_quality %}
+                {% for row in recent_quality %}
+                <div class="profile-list-card">
+                    <h4>{{ row['crop_name'] }}</h4>
+                    <p>{{ row['quality_result'] }}</p>
+                    <small>{{ row['created_at'] }}</small>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-result-box"><p>No quality checks yet.</p></div>
+            {% endif %}
+        </div>
+    </section>
+
+</body>
+</html>

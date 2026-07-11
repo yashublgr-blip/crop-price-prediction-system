@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Quality Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-body">
+
+<nav class="navbar">
+    <div class="nav-left">
+        <div class="logo-badge">🌾</div>
+        <div>
+            <h2 class="brand-title">CropPriceAI</h2>
+            <p class="brand-subtitle">Crop Quality Intelligence</p>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/quality" class="active-link">Quality Check</a>
+        <a href="/history">My Predictions</a>
+
+        {% if session.get('role') == 'admin' %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-tag">AI Crop Quality Analysis</span>
+            <h1>Analyze Crop Quality</h1>
+            <p>
+                Upload crop image and get damage percentage, confidence,
+                suggestion, and Kannada-English explanation.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-layout">
+
+    <div class="glass-card prediction-form-card">
+        <div class="card-head">
+            <h2>🧠 Upload Crop Image</h2>
+            <p>Select auto-detect or choose crop type manually.</p>
+        </div>
+
+        <form method="POST" action="/quality" enctype="multipart/form-data" class="predict-form">
+
+            <div class="input-group">
+                <label for="crop_name">Crop Type</label>
+
+                <select name="crop_name" id="crop_name" required>
+                    <option value="">Select Crop Type</option>
+                    <option value="Auto Detect Crop">🤖 Auto Detect Crop</option>
+                    <option value="Wheat">🌾 Wheat</option>
+                    <option value="Rice">🍚 Rice</option>
+                    <option value="Maize">🌽 Maize</option>
+                    <option value="Cotton">☁ Cotton</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="image">Crop Image</label>
+                <input type="file" name="image" id="image" accept=".png,.jpg,.jpeg,.webp,image/*" required>
+            </div>
+
+            <button type="submit" class="predict-btn">Analyze Crop</button>
+        </form>
+    </div>
+
+    <div class="glass-card result-card-box">
+        <div class="card-head">
+            <h2>📋 Quality Result</h2>
+            <p>Result appears after analysis.</p>
+        </div>
+
+        {% if result %}
+        <div class="result-grid">
+            <div class="result-stat">
+                <span>Crop</span>
+                <h3>{{ crop_name }}</h3>
+            </div>
+
+            <div class="result-stat highlight-stat">
+                <span>Status</span>
+                <h3>{{ result }}</h3>
+            </div>
+
+            <div class="result-stat">
+                <span>Damage</span>
+                <h3>{{ damage_percent }}</h3>
+            </div>
+
+            <div class="result-stat">
+                <span>Confidence</span>
+                <h3>{{ confidence }}</h3>
+            </div>
+        </div>
+
+        {% if suggestion %}
+        <div class="insight-banner">
+            <div class="insight-item">
+                <h4>Suggestion</h4>
+                <p>{{ suggestion }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if reason %}
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Explanation</h3>
+                <span class="chart-badge">English + Kannada</span>
+            </div>
+            <p style="white-space: pre-line;">{{ reason }}</p>
+        </div>
+        {% endif %}
+
+        {% if image_file %}
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Analyzed Image</h3>
+                <span class="chart-badge">Damage Marked</span>
+            </div>
+
+            <img src="{{ url_for('static', filename=image_file) }}"
+                 style="width:100%;border-radius:18px;">
+        </div>
+        {% endif %}
+
+        {% else %}
+        <p>Select crop type and upload image to view result.</p>
+        {% endif %}
+    </div>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>🌾 Crop Price Prediction</h2>
+
+<a href="/quality">Go to Quality Check</a> |
+<a href="/logout">Logout</a>
+
+<form method="POST">
+<br>
+<select name="crop">
+<option>Wheat</option>
+<option>Rice</option>
+<option>Maize</option>
+<option>Cotton</option>
+</select><br><br>
+
+<input name="year" placeholder="Enter Year"><br><br>
+
+<select name="month">
+<option>January</option>
+<option>February</option>
+<option>March</option>
+</select><br><br>
+
+<button>Predict</button>
+</form>
+
+{% if result %}
+<h3>Result:</h3>
+<p>Past: {{ result.past }}</p>
+<p>Present: {{ result.present }}</p>
+<p>Future: {{ result.future }}</p>
+<p>Average: {{ result.avg }}</p>
+
+<img src="{{ url_for('static', filename='graph.png') }}" width="400">
+{% endif %}
+
+</body>
+</html>

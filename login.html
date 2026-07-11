@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop AI Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #e8f5e9;
+        }
+
+        .left {
+            width: 50%;
+            background: url("{{ url_for('static', filename='farm.jpg') }}") center/cover no-repeat;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .left-text {
+            background: rgba(0,0,0,0.45);
+            padding: 18px;
+            border-radius: 14px;
+        }
+
+        .right {
+            width: 50%;
+            background: linear-gradient(135deg, #f1f8e9, #c8e6c9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .card {
+            width: 390px;
+            background: white;
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1b5e20;
+            margin-bottom: 5px;
+        }
+
+        .sub {
+            color: #666;
+            margin-bottom: 22px;
+            font-size: 14px;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #2e7d32;
+            background: white;
+            color: #2e7d32;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .role-btn.active {
+            background: #2e7d32;
+            color: white;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin: 10px 0;
+            border: 1px solid #cfd8dc;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        button.login-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 12px;
+            background: #2e7d32;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button.login-btn:hover {
+            background: #1b5e20;
+        }
+
+        .error {
+            color: red;
+            min-height: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .link {
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .left {
+                display: none;
+            }
+
+            .right {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="left">
+    <div class="left-text">
+        🌾 Smart Farming with AI<br>
+        Crop Price Prediction & Quality Detection
+    </div>
+</div>
+
+<div class="right">
+    <div class="card">
+        <h1>🌾 Crop Price AI</h1>
+        <p class="sub">Choose login type and continue</p>
+
+        <div class="role-buttons">
+            <button type="button" class="role-btn active" onclick="setUser()">👤 User</button>
+            <button type="button" class="role-btn" onclick="setAdmin()">👑 Admin</button>
+        </div>
+
+        <form method="POST">
+            <input id="username" name="username" placeholder="Username" required>
+            <input id="password" type="password" name="password" placeholder="Password" required>
+
+            <button class="login-btn" type="submit">Login</button>
+        </form>
+
+        <div class="error">{{ error }}</div>
+
+        <div class="link">
+            New user? <a href="/signup">Create Account</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const buttons = document.querySelectorAll(".role-btn");
+
+    function clearActive() {
+        buttons.forEach(btn => btn.classList.remove("active"));
+    }
+
+    function setUser() {
+        clearActive();
+        buttons[0].classList.add("active");
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+        document.getElementById("username").placeholder = "Enter User Username";
+        document.getElementById("password").placeholder = "Enter User Password";
+    }
+
+    function setAdmin() {
+        clearActive();
+        buttons[1].classList.add("active");
+        document.getElementById("username").value = "admin";
+        document.getElementById("password").value = "admin123";
+        document.getElementById("username").placeholder = "Admin Username";
+        document.getElementById("password").placeholder = "Admin Password";
+    }
+</script>
+
+</body>
+</html>

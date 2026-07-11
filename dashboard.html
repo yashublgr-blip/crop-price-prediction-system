@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropPriceAI Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo-badge">🌾</div>
+            <div>
+                <h2 class="brand-title">CropPriceAI</h2>
+                <p class="brand-subtitle">Smart Farming Intelligence</p>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/dashboard" class="active-link">Dashboard</a>
+            <a href="/quality">Quality Check</a>
+            <a href="/history">My Predictions</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="/admin">Admin</a>
+            {% endif %}
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-tag">AI-Powered Crop Analytics</span>
+                <h1>Premium Crop Price Prediction Dashboard</h1>
+                <p>
+                    Predict crop prices using smart data-driven insights, analyze market trends,
+                    and make better agricultural decisions with a modern AI platform.
+                </p>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat-card">
+                    <h3>4+</h3>
+                    <p>Supported Crops</p>
+                </div>
+                <div class="hero-stat-card">
+                    <h3>AI</h3>
+                    <p>Forecast Engine</p>
+                </div>
+                <div class="hero-stat-card">
+                    <h3>Live</h3>
+                    <p>Prediction View</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="crop-showcase">
+        <div class="section-title-wrap">
+            <h2>Popular Crops</h2>
+            <p>Quick visual overview of supported crop categories</p>
+        </div>
+
+        <div class="crop-grid">
+            <div class="crop-card">
+                <div class="crop-image-wrap">
+                    <img src="{{ url_for('static', filename='wheat.jpg') }}" alt="Wheat">
+                </div>
+                <div class="crop-info">
+                    <h3>Wheat</h3>
+                    <p>Stable and essential grain market crop.</p>
+                </div>
+            </div>
+
+            <div class="crop-card">
+                <div class="crop-image-wrap">
+                    <img src="{{ url_for('static', filename='rice.jpg') }}" alt="Rice">
+                </div>
+                <div class="crop-info">
+                    <h3>Rice</h3>
+                    <p>High-demand crop with seasonal price movement.</p>
+                </div>
+            </div>
+
+            <div class="crop-card">
+                <div class="crop-image-wrap">
+                    <img src="{{ url_for('static', filename='maize.jpg') }}" alt="Maize">
+                </div>
+                <div class="crop-info">
+                    <h3>Maize</h3>
+                    <p>Widely traded crop across food and feed sectors.</p>
+                </div>
+            </div>
+
+            <div class="crop-card">
+                <div class="crop-image-wrap">
+                    <img src="{{ url_for('static', filename='cotton.jpg') }}" alt="Cotton">
+                </div>
+                <div class="crop-info">
+                    <h3>Cotton</h3>
+                    <p>Important commercial crop with market fluctuations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-layout">
+        <div class="glass-card prediction-form-card">
+            <div class="card-head">
+                <h2>📈 Predict Crop Price</h2>
+                <p>Select crop, year and month to generate an AI-based forecast.</p>
+            </div>
+
+            {% if error %}
+            <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" class="predict-form">
+                <div class="input-group">
+                    <label for="crop">Crop</label>
+                    <select name="crop" id="crop" required>
+                        <option value="">Select Crop</option>
+                        {% for crop in crops %}
+                        <option value="{{ crop }}">{{ crop }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="year">Year</label>
+                    <input type="number" name="year" id="year" placeholder="Enter year" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="month">Month</label>
+                    <select name="month" id="month" required>
+                        <option value="">Select Month</option>
+                        {% for month in months %}
+                        <option value="{{ month }}">{{ month }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="predict-btn">Predict Now</button>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="glass-card result-card-box">
+            <div class="card-head">
+                <h2>📊 {{ result.crop }} Market Prediction</h2>
+                <p>Professional summary of historical, current and predicted price values.</p>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-stat">
+                    <span>Past Price</span>
+                    <h3>₹ {{ result.past }}</h3>
+                </div>
+                <div class="result-stat">
+                    <span>Present Price</span>
+                    <h3>₹ {{ result.present }}</h3>
+                </div>
+                <div class="result-stat highlight-stat">
+                    <span>Future Price</span>
+                    <h3>₹ {{ result.future }}</h3>
+                </div>
+                <div class="result-stat">
+                    <span>Average Price</span>
+                    <h3>₹ {{ result.avg }}</h3>
+                </div>
+            </div>
+
+            {% if result.change is defined %}
+            <div class="insight-banner">
+                <div class="insight-item">
+                    <h4>Expected Change</h4>
+                    <p>₹ {{ result.change }}</p>
+                </div>
+                <div class="insight-item">
+                    <h4>Percentage Change</h4>
+                    <p>{{ result.change_percent }}%</p>
+                </div>
+                <div class="insight-item">
+                    <h4>Trend</h4>
+                    <p>{{ result.trend|title }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Interactive Price Graph</h3>
+                    <span class="chart-badge">Live View</span>
+                </div>
+                <canvas id="priceChart"></canvas>
+            </div>
+
+            <div class="action-btn-row">
+                <a href="/download-prediction-report" class="action-link-btn green-btn">📄 Download PDF</a>
+                <a href="/history" class="action-link-btn blue-btn">📊 View History</a>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    {% if result %}
+    <script>
+        const ctx = document.getElementById('priceChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Past', 'Present', 'Future'],
+                datasets: [{
+                    label: 'Price',
+                    data: [{{ result.past }}, {{ result.present }}, {{ result.future }}],
+                    borderColor: '#2e7d32',
+                    backgroundColor: 'rgba(46, 125, 50, 0.12)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹ ' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+
+</body>
+</html>
